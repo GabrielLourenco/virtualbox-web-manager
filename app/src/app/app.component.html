@@ -1,0 +1,89 @@
+<main>
+  <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="#">Projeto de Infra</a>
+  </nav>
+  <section class="container mt-4">
+    <div class="row">
+      <div class="col-md-4">
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let machine of vms">
+            <div class="d-flex justify-content-between">
+              <div>
+                <span [ngClass]="{'text-success': machine.on, 'text-danger': !machine.on}"><i class="fa fa-circle"></i></span>
+                {{ machine.name }}
+              </div>
+              <div class="actions">
+                <i class="fa fa-power-off" (click)="toogleOnOffVm(machine)"></i>
+                <i class="fa fa-edit" *ngIf="!machine.on" (click)="selectVm(machine, 'edit')"></i>
+                <i class="fa fa-clone" (click)="selectVm(machine, 'clone')"></i>
+                <i class="fa fa-trash-o" *ngIf="!machine.on" (click)="deleteVm(machine)"></i>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-8" *ngIf="selectedVm">
+        <div class="card">
+          <div class="card-body">
+            <form [formGroup]="form" (ngSubmit)="enviar()">
+              <div class="row">
+                <div class="col-md-6 form-group">
+                  <label for="nome">Nome</label>
+                  <input type="text" class="form-control" id="nome" formControlName="nome">
+                </div>
+                <div class="col-md-6 form-group">
+                  <label for="ip">IP da máquina</label>
+                  <input type="text" class="form-control" id="ip" formControlName="ip">
+                </div>
+                <div class="col-md-6 form-group">
+                  <label class="d-flex justify-content-between" for="cpuQtde">
+                    <div>
+                      Quantidade CPU
+                    </div>
+                    <div class="font-weight-bold">{{form.controls.cpuQtde.value}}</div>
+                  </label>
+                  <input type="range" class="custom-range" min="1" max="8" id="cpuQtde" formControlName="cpuQtde">
+                </div>
+                <div class="col-md-6 form-group">
+                  <label class="d-flex justify-content-between" for="cpuCap">
+                    <div>
+                      Capacidade CPU (%)
+                    </div>
+                    <div class="font-weight-bold">{{form.controls.cpuCap.value}}</div>
+                    </label>
+                  <input type="range" class="custom-range" min="1" max="100" id="cpuCap" formControlName="cpuCap">
+                </div>
+                <div class="col-md-6 form-group">
+                  <label class="d-flex justify-content-between" for="memory">
+                    <div>
+                      Tamanho da memória
+                    </div>
+                    <div class="font-weight-bold">{{form.controls.memory.value}}</div>
+                  </label>
+                  <input type="range" class="custom-range" min="1024" max="8192" id="memory" formControlName="memory">
+                </div>
+                <div class="col-md-6 form-group">
+                  <label class="d-flex justify-content-between" for="hd">
+                    <div>
+                      Tamanho do HD
+                    </div>
+                    <div class="font-weight-bold">{{form.controls.hd.value}}</div>
+                  </label>
+                  <input type="range" class="custom-range" min="13000" max="100000" step="1000" id="hd" formControlName="hd">
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <button type="submit" class="btn btn-success" [disabled]="(!editMode && form.controls.nome.value === selectedVm.name) || loading">{{ loading ? 'Carregando...' : 'Salvar'}}</button>
+                <div *ngIf="!editMode && form.controls.nome.value === selectedVm.name">
+                  <small class="ml-3">
+                    <i class="fa fa-exclamation-triangle"></i> O nome da nova VM deve ser diferente da atual
+                  </small>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
